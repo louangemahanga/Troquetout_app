@@ -1,0 +1,149 @@
+{# troquetout_app/templates/troquetout_app/detail_annonce.html #}
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ annonce.titre }} - Détails de l'Annonce</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'troquetout_app/css/style.css' %}">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary': '#6a0dad',
+                        'secondary': '#8e44ad',
+                        'accent': '#9b59b6',
+                        'background': '#1a1a2e',
+                        'surface': '#2b2b4d',
+                        'text-light': '#e0e0e0',
+                        'text-dark': '#a0a0a0',
+                    },
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-background text-text-light min-h-screen flex flex-col">
+
+    <header class="bg-surface shadow-md py-4 px-6 flex justify-between items-center z-10">
+        <h1 class="text-3xl font-bold gradient-text-primary"><a href="{% url 'home' %}">TroqueTout</a></h1>
+        <nav>
+            <ul class="flex space-x-6">
+                <li><a href="{% url 'creer_annonce' %}" class="text-text-light hover:text-accent transition-colors duration-300">Poster une Annonce</a></li>
+                {% if user.is_authenticated %}
+                    <li><a href="#" class="text-text-light hover:text-accent transition-colors duration-300">Salut, {{ user.username }}!</a></li>
+                    {# Le lien de déconnexion est maintenant un formulaire POST #}
+                    <li>
+                        <form action="{% url 'logout' %}" method="post" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="text-red-400 hover:text-red-500 transition-colors duration-300 bg-transparent border-none cursor-pointer p-0 m-0">
+                                Déconnexion
+                            </button>
+                        </form>
+                    </li>
+                {% else %}
+                    <li><a href="{% url 'login' %}" class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-secondary transition-colors duration-300">Connexion / Inscription</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+    </header>
+
+    <main class="flex-grow container mx-auto px-4 py-8">
+        <section class="max-w-3xl mx-auto bg-surface rounded-lg p-8 shadow-lg glass-effect">
+            <h2 class="text-4xl font-bold text-accent text-center mb-6">{{ annonce.titre }}</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="flex justify-center items-center">
+                    {% if annonce.image %}
+                        <img src="{{ annonce.image.url }}" alt="{{ annonce.titre }}" class="rounded-lg shadow-lg max-h-96 object-contain w-full">
+                    {% else %}
+                        <div class="bg-gray-700 p-8 rounded-lg text-center text-text-dark w-full h-96 flex items-center justify-center">
+                            <span class="text-xl">Pas d'image disponible</span>
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <div>
+                    <p class="text-text-light text-lg mb-4">{{ annonce.description }}</p>
+                    
+                    <ul class="space-y-3 text-text-dark mb-6">
+                        <li><strong>Catégorie:</strong> {{ annonce.categorie.nom|default:"Non spécifiée" }}</li>
+                        <li><strong>Type d'Annonce:</strong> {{ annonce.get_type_annonce_display }}</li>
+                        <li><strong>Valeur Estimée:</strong> {{ annonce.valeur_estimee|default:"Non spécifiée" }}</li>
+                        <li><strong>Localisation:</strong> {{ annonce.localisation|default:"Non spécifiée" }}</li>
+                        <li><strong>Statut:</strong> <span class="font-semibold {% if annonce.statut == 'OUVERT' %}text-green-400{% elif annonce.statut == 'ECHANGE' %}text-yellow-400{% else %}text-red-400{% endif %}">{{ annonce.get_statut_display }}</span></li>
+                        <li><strong>Publié par:</strong> {{ annonce.auteur.username }} le {{ annonce.date_publication|date:"d M Y à H:i" }}</li>
+                    </ul>
+
+                    {# Section de contact pour l'auteur de l'annonce #}
+                    <div class="mt-6 p-4 bg-surface-dark rounded-lg shadow-md">
+                        <h3 class="text-xl font-semibold text-text-light mb-3">Contacter l'annonceur</h3>
+                        <ul class="space-y-2 text-text-dark">
+                            {% if annonce.contact_telephone %}
+                                <li>
+                                    <i class="fas fa-phone-alt text-primary mr-2"></i> 
+                                    Téléphone: <a href="tel:{{ annonce.contact_telephone }}" class="text-accent hover:underline">{{ annonce.contact_telephone }}</a>
+                                </li>
+                            {% endif %}
+                            {% if annonce.contact_email %}
+                            <li>
+                                <i class="fas fa-envelope text-primary mr-2"></i> 
+                                Email: <a href="mailto:{{ annonce.contact_email }}" class="text-accent hover:underline">{{ annonce.contact_email }}</a>
+                            </li>
+                            {% endif %}
+                            {% if not annonce.contact_telephone and not annonce.contact_email %}
+                                <li>Aucune information de contact directe n'est disponible pour cette annonce.</li>
+                            {% endif %}
+                            {% if annonce.adresse %}
+                                <li>
+                                    <i class="fas fa-map-marker-alt text-primary mr-2"></i> 
+                                    Adresse d'Échange: {{ annonce.adresse }}
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </div>
+
+                    {# Boutons Modifier et Supprimer (visibles uniquement par l'auteur de l'annonce) #}
+                    {# La condition ci-dessous est pour la production, elle assure que seul l'auteur peut modifier/supprimer. #}
+                    {# Si tu es toujours en phase de test et que tu veux que tous les utilisateurs connectés voient ces boutons, utilise simplement `{% if user.is_authenticated %}`. #}
+                    {% if user.is_authenticated and user == annonce.auteur %} 
+                        <div class="flex gap-4 mt-6">
+                            <a href="{% url 'modifier_annonce' annonce.pk %}" class="px-6 py-3 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700 transition-colors duration-300">Modifier l'annonce</a>
+                            <a href="{% url 'supprimer_annonce' annonce.pk %}" class="px-6 py-3 bg-red-600 text-white rounded-lg shadow-md hover:bg-red-700 transition-colors duration-300"
+                               onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette annonce ? Cette action est irréversible.');">Supprimer l'annonce</a>
+                        </div>
+                    {% elif user.is_authenticated %} 
+                        {# Si l'utilisateur est connecté mais n'est PAS l'auteur de l'annonce #}
+                        <div class="mt-6">
+                            <a href="{% url 'creer_proposition' pk=annonce.pk %}" class="w-full bg-primary text-white py-3 px-4 rounded-lg text-center font-bold hover:bg-secondary transition-colors duration-300 block">
+                                <i class="fas fa-handshake mr-2"></i> Faire une Proposition d'Échange
+                            </a>
+                        </div>
+                    {% else %}
+                        {# Si l'utilisateur n'est pas connecté du tout #}
+                        <div class="mt-6 text-center text-text-dark text-sm">
+                            <p>Connectez-vous pour faire une proposition d'échange.</p>
+                            <a href="{% url 'login' %}" class="mt-2 inline-block text-accent hover:underline">Se connecter</a>
+                        </div>
+                    {% endif %}
+
+                    <div class="mt-8 text-center">
+                        <a href="{% url 'liste_annonces' %}" class="inline-block text-text-dark hover:text-accent transition-colors duration-300">
+                            <i class="fas fa-arrow-left mr-2"></i> Retour à la liste des annonces
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-surface text-text-dark py-6 text-center text-sm shadow-inner">
+        <p>&copy; 2025 TroqueTout. Tous droits réservés.</p>
+    </footer>
+
+</body>
+</html>

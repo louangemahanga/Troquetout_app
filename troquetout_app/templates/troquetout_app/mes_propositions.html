@@ -1,0 +1,87 @@
+{# troquetout_app/templates/troquetout_app/mes_propositions.html #}
+{% extends 'troquetout_app/base.html' %}
+{% load widget_tweaks %}
+
+{% block title %}Mes Propositions{% endblock %}
+
+{% block content %}
+<div class="bg-gray-50 py-16 md:py-24 min-h-screen">
+    <main class="container mx-auto px-6 flex-grow">
+        <h2 class="text-4xl font-bold gradient-text-primary mb-10 text-center">Mes Propositions de Troc</h2>
+
+        {# Affichage des messages (succès, erreur, info) #}
+        {% if messages %}
+            <ul class="mb-6">
+                {% for message in messages %}
+                    <li class="p-3 rounded-md mb-2 text-sm {% if message.tags == 'success' %}bg-green-100 text-green-800{% elif message.tags == 'error' %}bg-red-100 text-red-800{% elif message.tags == 'info' %}bg-blue-100 text-blue-800{% endif %}">
+                        {{ message }}
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        {% if propositions %}
+            <div class="space-y-6">
+                {% for proposition in propositions %}
+                <div class="bg-white rounded-2xl p-6 shadow-lg border {% if proposition.statut == 'acceptee' %}border-green-400{% elif proposition.statut == 'refusee' or proposition.statut == 'annulee' %}border-red-400{% else %}border-gray-200{% endif %}">
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-4">
+                        <div class="flex-1">
+                            <h3 class="text-2xl font-semibold text-primary mb-1">
+                                {% if proposition.propose_par == request.user %}
+                                    Ma proposition pour "{{ proposition.annonce_cible.titre }}"
+                                {% else %}
+                                    Proposition reçue pour "{{ proposition.annonce_cible.titre }}"
+                                {% endif %}
+                            </h3>
+                            <p class="text-sm text-gray-500">
+                                Proposée par: <span class="font-medium text-gray-700">{{ proposition.propose_par.username }}</span> |
+                                Statut: <span class="font-bold {% if proposition.statut == 'en_attente' %}text-yellow-600{% elif proposition.statut == 'acceptee' %}text-green-600{% elif proposition.statut == 'refusee' or proposition.statut == 'annulee' %}text-red-600{% endif %}">{{ proposition.get_statut_display }}</span> |
+                                Date: {{ proposition.date_proposition|date:"d M Y H:i" }}
+                            </p>
+                        </div>
+                    </div>
+
+                    {% if proposition.message %}
+                        <div class="bg-gray-100 p-3 rounded-md mb-4">
+                            <p class="text-gray-700 italic">"{{ proposition.message }}"</p>
+                        </div>
+                    {% endif %}
+                    
+                    <div class="flex flex-col md:flex-row justify-between items-center text-sm text-gray-600 space-y-3 md:space-y-0 md:space-x-4">
+                        <p>Votre annonce proposée : <a href="{% url 'detail_annonce' proposition.annonce_proposee.pk %}" class="text-blue-600 hover:underline font-medium">Voir "{{ proposition.annonce_proposee.titre }}"</a></p>
+                        <p>Annonce ciblée : <a href="{% url 'detail_annonce' proposition.annonce_cible.pk %}" class="text-blue-600 hover:underline font-medium">Voir "{{ proposition.annonce_cible.titre }}"</a></p>
+                    </div>
+
+                    <div class="mt-4 flex flex-wrap justify-end gap-3">
+                        {# Actions possibles en fonction du statut et de qui est l'utilisateur #}
+                        {% if proposition.statut == 'en_attente' %}
+                            {% if proposition.propose_par == request.user %}
+                                {# L'utilisateur a fait la proposition, il peut l'annuler ou la modifier #}
+                                <a href="{% url 'modifier_proposition' proposition.pk %}" class="px-4 py-2 text-sm bg-blue-500 text-white rounded-md hover:bg-blue-600 transition">Modifier</a> {# <-- Nouveau bouton Modifier #}
+                                <form action="{% url 'annuler_proposition' proposition.pk %}" method="post" class="inline">
+                                    {% csrf_token %}
+                                    <button type="submit" class="px-4 py-2 text-sm bg-red-500 text-white rounded-md hover:bg-red-600 transition">Annuler</button>
+                                </form>
+                            {% elif proposition.annonce_cible.auteur == request.user %}
+                                {# L'utilisateur a reçu la proposition, il peut l'accepter ou la refuser #}
+                                <form action="{% url 'accepter_proposition' proposition.pk %}" method="post" class="inline">
+                                    {% csrf_token %}
+                                    <button type="submit" class="px-4 py-2 text-sm bg-green-500 text-white rounded-md hover:bg-green-600 transition">Accepter</button>
+                                </form>
+                                <form action="{% url 'refuser_proposition' proposition.pk %}" method="post" class="inline">
+                                    {% csrf_token %}
+                                    <button type="submit" class="px-4 py-2 text-sm bg-orange-500 text-white rounded-md hover:bg-orange-600 transition">Refuser</button>
+                                </form>
+                            {% endif %}
+                        {% endif %}
+                        {# Vous pouvez ajouter d'autres actions ou des liens vers des discussions ici #}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="text-center text-gray-600 text-xl py-10">Aucune proposition de troc à afficher pour le moment.</p>
+        {% endif %}
+    </main>
+</div>
+{% endblock content %}

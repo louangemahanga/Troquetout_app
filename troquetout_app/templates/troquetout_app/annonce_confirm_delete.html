@@ -1,0 +1,69 @@
+{# troquetout_app/templates/troquetout_app/annonce_confirm_delete.html #}
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirmer la Suppression - {{ object.titre }}</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'troquetout_app/css/style.css' %}">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary': '#6a0dad',
+                        'secondary': '#8e44ad',
+                        'accent': '#9b59b6',
+                        'background': '#1a1a2e',
+                        'surface': '#2b2b4d',
+                        'text-light': '#e0e0e0',
+                        'text-dark': '#a0a0a0',
+                    },
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-background text-text-light min-h-screen flex flex-col">
+
+    <header class="bg-surface shadow-md py-4 px-6 flex justify-between items-center z-10">
+        <h1 class="text-3xl font-bold gradient-text-primary"><a href="{% url 'home' %}">TroqueTout</a></h1>
+        <nav>
+            <ul class="flex space-x-6">
+                <li><a href="{% url 'creer_annonce' %}" class="text-text-light hover:text-accent transition-colors duration-300">Poster une Annonce</a></li>
+                {% if user.is_authenticated %}
+                    <li><a href="#" class="text-text-light hover:text-accent transition-colors duration-300">Salut, {{ user.username }}!</a></li>
+                    <li><a href="{% url 'logout' %}" class="text-red-400 hover:text-red-500 transition-colors duration-300">Déconnexion</a></li>
+                {% else %}
+                    <li><a href="{% url 'login' %}" class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-secondary transition-colors duration-300">Connexion / Inscription</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+    </header>
+
+    <main class="flex-grow container mx-auto px-4 py-8 flex items-center justify-center">
+        <section class="max-w-md mx-auto bg-surface rounded-lg p-8 shadow-lg text-center glass-effect">
+            <h2 class="text-3xl font-bold text-red-500 mb-6">Confirmer la Suppression</h2>
+            <p class="text-lg text-text-light mb-8">Êtes-vous sûr de vouloir supprimer l'annonce "<strong class="text-accent">{{ object.titre }}</strong>" ?</p>
+            
+            <form method="post" class="space-y-4">
+                {% csrf_token %}
+                <button type="submit" class="w-full bg-red-600 text-white py-3 px-6 rounded-lg font-bold hover:bg-red-700 transition-colors duration-300">
+                    <i class="fas fa-trash-alt mr-2"></i> Oui, Supprimer
+                </button>
+                <a href="{% url 'detail_annonce' pk=object.pk %}" class="w-full inline-block bg-gray-600 text-white py-3 px-6 rounded-lg font-bold hover:bg-gray-700 transition-colors duration-300">
+                    <i class="fas fa-times-circle mr-2"></i> Annuler
+                </a>
+            </form>
+        </section>
+    </main>
+
+    <footer class="bg-surface text-text-dark py-6 text-center text-sm shadow-inner">
+        <p>&copy; 2025 TroqueTout. Tous droits réservés.</p>
+    </footer>
+
+</body>
+</html>

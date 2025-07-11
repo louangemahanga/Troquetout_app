@@ -1,0 +1,47 @@
+{# troquetout_app/templates/troquetout_app/mes_annonces.html #}
+{% extends 'troquetout_app/base.html' %}
+
+{% block title %}Mes Annonces - TroqueTout{% endblock title %}
+
+{% block content %}
+<div class="bg-gray-50 py-16 md:py-24 min-h-screen">
+    <main class="container mx-auto px-6 flex-grow">
+        <h2 class="text-4xl font-bold gradient-text-primary mb-10 text-center">Mes Annonces</h2>
+
+        {% if annonces %}
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {% for annonce in annonces %}
+                <div class="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-shadow duration-300 transform hover:-translate-y-1">
+                    <h3 class="text-2xl font-semibold text-gray-800 mb-2">{{ annonce.titre }}</h3>
+                    <p class="text-gray-600 mb-3 text-sm">Catégorie: <span class="font-medium text-primary">{{ annonce.categorie }}</span></p>
+                    <p class="text-gray-700 text-base mb-4">{{ annonce.description|truncatechars:150 }}</p>
+                    {% if annonce.prix_estimatif %}
+                        <p class="text-gray-600 text-sm mb-4">Valeur estimée: <span class="font-bold text-accent">{{ annonce.prix_estimatif }} €</span></p>
+                    {% endif %}
+                    <p class="text-gray-500 text-xs">Publié le: {{ annonce.date_publication|date:"d M Y à H:i" }}</p>
+                    <div class="mt-4 flex justify-end space-x-3">
+                        {# Ajoutez ici des liens pour modifier ou supprimer l'annonce si vous voulez #}
+                        <a href="{% url 'detail_annonce' annonce.pk %}" class="text-sm font-semibold text-primary hover:underline">Voir détail</a>
+                        <a href="{% url 'modifier_annonce' annonce.pk %}" class="text-sm font-semibold text-indigo-600 hover:underline">Modifier</a>
+                        <a href="{% url 'supprimer_annonce' annonce.pk %}" class="text-sm font-semibold text-red-600 hover:underline">Supprimer</a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="text-center py-12 bg-white rounded-2xl shadow-lg">
+                <p class="text-xl text-gray-700 mb-6">Vous n'avez pas encore publié d'annonces.</p>
+                <a href="{% url 'creer_annonce' %}" class="bg-primary text-white px-6 py-3 rounded-full font-bold hover:bg-secondary transition-colors duration-300 text-lg shadow-md inline-flex items-center">
+                    <i class="fas fa-plus-circle mr-2"></i>Publier une annonce
+                </a>
+            </div>
+        {% endif %}
+
+        <div class="text-center mt-12">
+            <a href="{% url 'profile' user.pk %}" class="text-accent hover:underline text-lg inline-flex items-center">
+                <i class="fas fa-arrow-left mr-2"></i>Retour au profil
+            
+        </div>
+    </main>
+</div>
+{% endblock content %}

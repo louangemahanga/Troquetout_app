@@ -1,0 +1,151 @@
+:root {
+    --primary-color: #6366f1; /* Indigo pour les actions principales */
+    --secondary-color: #ec4899; /* Rose vif pour l'accentuation */
+    --tertiary-color: #8b5cf6; /* Violet pour les dégradés */
+    --text-dark: #1f2937; /* Texte foncé pour le contraste */
+    --text-light: #4b5563; /* Texte plus clair pour les descriptions */
+    --bg-light: #f9fafb; /* Fond très clair */
+    --card-bg: rgba(255, 255, 255, 0.9); /* Fond de carte légèrement transparent */
+    --border-light: #e5e7eb; /* Bordure claire */
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background: linear-gradient(135deg, #e0f2f7 0%, #c8e6c9 100%); /* Dégradé de fond doux et frais */
+    color: var(--text-dark);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Outfit', sans-serif;
+    color: var(--text-dark);
+}
+
+/* Effet Glassmorphism pour les cartes et sections clés */
+.glass-effect {
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border-radius: 20px; /* Plus arrondi */
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+}
+
+/* Texte en dégradé */
+.gradient-text-primary {
+    background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.gradient-text-secondary {
+    background: linear-gradient(90deg, var(--secondary-color), var(--tertiary-color));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+/* Boutons avec dégradé */
+.btn-gradient-primary {
+    background: linear-gradient(90deg, var(--primary-color), var(--tertiary-color));
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+}
+
+.btn-gradient-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(99, 102, 241, 0.6);
+    opacity: 0.9;
+}
+
+.btn-outline-primary {
+    border: 2px solid var(--primary-color);
+    color: var(--primary-color);
+    transition: all 0.3s ease;
+}
+
+.btn-outline-primary:hover {
+    background-color: var(--primary-color);
+    color: white;
+    box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+}
+
+/* Effet de carte au survol */
+.card-hover-effect {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card-hover-effect:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+}
+
+/* Animation flottante */
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-15px); }
+}
+
+.float-animation {
+    animation: float 5s ease-in-out infinite;
+}
+
+/* Overlay modal */
+.modal-overlay {
+    background-color: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(5px);
+}
+
+/* Visibilité modale */
+.modal.hidden {
+    opacity: 0;
+    visibility: hidden;
+}
+.modal.visible {
+    opacity: 1;
+    visibility: visible;
+}
+
+
+troquetout_app/static/troquetout_app/css/style.css
+
+/* ... vos styles existants ... */
+
+/* Styles pour les champs de formulaire Django */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="number"],
+textarea,
+select {
+    @apply w-full p-3 border border-gray-600 rounded-lg bg-surface text-text-light focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent transition-all duration-300;
+}
+
+/* Style spécifique pour les inputs de type file (pour l'image) */
+input[type="file"] {
+    @apply block w-full text-sm text-text-light
+           file:mr-4 file:py-2 file:px-4
+           file:rounded-full file:border-0
+           file:text-sm file:font-semibold
+           file:bg-primary file:text-white
+           hover:file:bg-secondary cursor-pointer;
+}
+
+/* Style pour les messages d'erreur des champs */
+.errorlist {
+    @apply text-red-400 text-sm mt-1 list-none p-0;
+}
+
+.helptext {
+    @apply text-text-dark text-xs italic mt-1;
+}
+
+/* Amélioration visuelle pour les champs en focus */
+input:focus,
+textarea:focus,
+select:focus {
+    box-shadow: 0 0 0 3px rgba(155, 89, 182, 0.5); /* Couleur 'accent' avec transparence */
+}

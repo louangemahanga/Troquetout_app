@@ -1,0 +1,72 @@
+{# troquetout_app/templates/troquetout_app/contact.html #}
+{% extends 'troquetout_app/base.html' %} {# Assure-toi que c'est la SEULE ligne extends #}
+{% load static %} {# Toujours nécessaire pour charger les fichiers statiques #}
+{% load widget_tweaks %} {# Ajouter cette ligne pour un contrôle plus fin sur le rendu des champs #}
+
+{% block title %}Contactez-nous - TroqueTout{% endblock %}
+
+{% block content %}
+<main class="flex-grow container mx-auto px-4 py-8 flex items-center justify-center">
+    <section class="max-w-xl w-full bg-surface rounded-lg p-8 shadow-lg glass-effect">
+        <h2 class="text-4xl font-bold text-accent text-center mb-6">Contactez l'équipe TroqueTout</h2>
+        <p class="text-text-dark text-center mb-6">
+            Vous avez des questions, des suggestions ou besoin d'aide ? N'hésitez pas à nous envoyer un message !
+        </p>
+        
+        {# Affichage des messages (succès, erreur, etc.) #}
+        {% if messages %}
+            <div class="mb-4">
+                {% for message in messages %}
+                    <div class="p-3 rounded-lg text-white 
+                        {% if message.tags == 'success' %}bg-green-600{% elif message.tags == 'error' %}bg-red-600{% else %}bg-blue-600{% endif %}"
+                        role="alert">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        {# Formulaire de contact utilisant les champs du formulaire Django #}
+        <form method="post" class="space-y-6">
+            {% csrf_token %}
+            
+            <div>
+                <label for="{{ form.nom.id_for_label }}" class="block text-text-light text-sm font-bold mb-2">{{ form.nom.label }}:</label>
+                {# Utilisation de widget_tweaks pour appliquer les classes CSS directement #}
+                {% render_field form.nom class="w-full px-5 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary text-gray-700" placeholder="Votre nom" %}
+                {% for error in form.nom.errors %}
+                    <p class="text-red-500 text-xs italic mt-1">{{ error }}</p>
+                {% endfor %}
+            </div>
+
+            <div>
+                <label for="{{ form.email.id_for_label }}" class="block text-text-light text-sm font-bold mb-2">{{ form.email.label }}:</label>
+                {% render_field form.email class="w-full px-5 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary text-gray-700" placeholder="votre.email@example.com" %}
+                {% for error in form.email.errors %}
+                    <p class="text-red-500 text-xs italic mt-1">{{ error }}</p>
+                {% endfor %}
+            </div>
+
+            <div>
+                <label for="{{ form.sujet.id_for_label }}" class="block text-text-light text-sm font-bold mb-2">{{ form.sujet.label }}:</label>
+                {% render_field form.sujet class="w-full px-5 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary text-gray-700" placeholder="Sujet de votre message" %}
+                {% for error in form.sujet.errors %}
+                    <p class="text-red-500 text-xs italic mt-1">{{ error }}</p>
+                {% endfor %}
+            </div>
+
+            <div>
+                <label for="{{ form.message.id_for_label }}" class="block text-text-light text-sm font-bold mb-2">{{ form.message.label }}:</label>
+                {% render_field form.message class="w-full px-5 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary text-gray-700" placeholder="Votre message ici..." %}
+                {% for error in form.message.errors %}
+                    <p class="text-red-500 text-xs italic mt-1">{{ error }}</p>
+                {% endfor %}
+            </div>
+            
+            <button type="submit" class="w-full bg-primary text-white py-3 px-4 rounded-lg font-bold hover:bg-secondary transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-opacity-50">
+                Envoyer le message
+            </button>
+        </form>
+    </section>
+</main>
+{% endblock content %}

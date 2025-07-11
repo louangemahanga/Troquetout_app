@@ -1,0 +1,102 @@
+{% extends 'troquetout_app/base.html' %}
+{% load widget_tweaks %}
+
+{% block title %}Modifier l'annonce - TroqueTout{% endblock title %}
+
+{% block content %}
+<div class="bg-gray-50 py-16 md:py-24">
+    <main class="container mx-auto px-6 flex-grow flex items-center justify-center">
+        <section class="max-w-xl w-full bg-white rounded-3xl p-8 shadow-xl glass-effect animate-fade-in">
+            <h2 class="text-3xl font-bold gradient-text-primary mb-6 text-center">Modifier mon annonce</h2>
+            <form method="post" enctype="multipart/form-data" class="space-y-6">
+                {% csrf_token %}
+
+                {% for field in form %}
+                    <div class="mb-4">
+                        <label for="{{ field.id_for_label }}" class="block text-gray-700 text-sm font-bold mb-2">{{ field.label }}:</label>
+                        {% if field.field.widget.input_type == 'checkbox' %}
+                            <div class="flex items-center">
+                                {% render_field field class="mr-2 h-4 w-4 text-primary-600 border-gray-300 rounded focus:ring-primary-500" %}
+                                <span class="text-gray-800">{{ field.label }}</span>
+                            </div>
+                        
+                            <div id="new-image-preview-container" class="mb-4 {% if not annonce.image %}hidden{% endif %}">
+                                <p class="text-gray-700 text-sm font-bold mb-2">Nouvelle image (aperçu) :</p>
+                                <img id="new-image-preview" src="#" alt="Aperçu de la nouvelle image" class="w-32 h-32 object-cover rounded-lg shadow-md hidden mb-2">
+                            </div>
+
+                            {# Champ pour choisir une nouvelle image #}
+                            {% render_field field class="block w-full text-sm text-gray-700
+                                file:mr-4 file:py-2 file:px-4
+                                file:rounded-full file:border-0
+                                file:text-sm file:font-semibold
+                                file:bg-primary-100 file:text-primary-700
+                                hover:file:bg-primary-200 cursor-pointer" id="id_image_upload" %} {# Ajout d'un ID pour le JavaScript #}
+                            
+                            {% if field.help_text %}
+                                <p class="text-gray-500 text-xs italic mt-1">{{ field.help_text }}</p>
+                            {% endif %}
+                            {% if field.errors %}
+                                {% for error in field.errors %}
+                                    <p class="text-red-500 text-xs italic">{{ error }}</p>
+                                {% endfor %}
+                            {% endif %}
+                        {% else %}
+                            {% render_field field class="shadow appearance-none border rounded-lg w-full py-3 px-4 text-gray-800 leading-tight focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent transition-all duration-200 bg-gray-100 placeholder-gray-400" placeholder=field.label %}
+                            {% if field.help_text %}
+                                <p class="text-gray-500 text-xs italic mt-1">{{ field.help_text }}</p>
+                            {% endif %}
+                            {% if field.errors %}
+                                {% for error in field.errors %}
+                                    <p class="text-red-500 text-xs italic">{{ error }}</p>
+                                {% endfor %}
+                            {% endif %}
+                        {% endif %}
+                    </div>
+                {% endfor %}
+
+                <button type="submit" class="w-full btn-gradient-primary text-white font-bold py-3 px-4 rounded-lg shadow-md hover:shadow-lg transition-all duration-300">
+                    Sauvegarder les modifications
+                </button>
+                <a href="{% url 'detail_annonce' annonce.pk %}" class="block text-center mt-4 text-accent hover:underline">Annuler</a>
+            </form>
+        </section>
+    </main>
+</div>
+
+{% comment %} Script JavaScript pour la prévisualisation de l'image {% endcomment %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const imageUpload = document.getElementById('id_image_upload');
+        const newImagePreview = document.getElementById('new-image-preview');
+        const newImagePreviewContainer = document.getElementById('new-image-preview-container');
+        const currentImagePreview = document.getElementById('current-image-preview');
+
+        if (imageUpload) {
+            imageUpload.addEventListener('change', function(event) {
+                const file = event.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        newImagePreview.src = e.target.result;
+                        newImagePreview.classList.remove('hidden');
+                        newImagePreviewContainer.classList.remove('hidden');
+                        // Masquer l'image actuelle si une nouvelle image est sélectionnée
+                        if (currentImagePreview) {
+                            currentImagePreview.classList.add('hidden');
+                        }
+                    };
+                    reader.readAsDataURL(file);
+                } else {
+                    newImagePreview.classList.add('hidden');
+                    newImagePreviewContainer.classList.add('hidden');
+                    // Réafficher l'image actuelle si le champ est vidé
+                    if (currentImagePreview) {
+                        currentImagePreview.classList.remove('hidden');
+                    }
+                }
+            });
+        }
+    });
+</script>
+{% endblock content %}

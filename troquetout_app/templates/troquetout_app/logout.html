@@ -1,0 +1,89 @@
+{# troquetout_app/templates/troquetout_app/base.html #}
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}TroqueTout{% endblock title %}</title>
+    {% load static %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary': '#6a0dad',
+                        'secondary': '#8e44ad',
+                        'accent': '#9b59b6',
+                        'background': '#1a1a2e',
+                        'surface': '#2b2b4d',
+                        'text-light': '#e0e0e0',
+                        'text-dark': '#a0a0a0',
+                    },
+                }
+            }
+        }
+    </script>
+    <link href="{% static 'troquetout_app/css/style.css' %}" rel="stylesheet">
+    {% block extra_head %}{% endblock extra_head %}
+</head>
+   
+<body class="bg-background text-text-light font-sans leading-normal tracking-normal flex flex-col min-h-screen">
+
+    <header class="bg-surface shadow-md py-4">
+        <nav class="container mx-auto flex justify-between items-center px-6">
+            <a href="{% url 'home' %}" class="text-3xl font-bold gradient-text-primary text-accent">TroqueTout</a>
+            
+            <form method="get" action="{% url 'search_annonces' %}" class="flex gap-2 mx-4 flex-grow max-w-sm">
+                <input type="text" name="query" placeholder="Rechercher une annonce..." 
+                       class="p-2 rounded-lg bg-gray-800 border border-gray-700 text-text-light placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary w-full">
+                <button type="submit" class="bg-primary text-white py-2 px-4 rounded-lg hover:bg-secondary transition-colors duration-300">
+                    <i class="fas fa-search"></i>
+                </button>
+            </form>
+
+            <div class="space-x-8 text-lg flex items-center">
+                <a href="{% url 'home' %}" class="text-text-light hover:text-accent font-semibold transition-colors duration-300">Accueil</a>
+                <a href="{% url 'liste_annonces' %}" class="text-text-light hover:text-accent font-semibold transition-colors duration-300">Annonces</a>
+                {% if user.is_authenticated %}
+                    <a href="{% url 'creer_annonce' %}" class="text-text-light hover:text-accent font-semibold transition-colors duration-300">Poster une annonce</a>
+                    
+                    {# ICI LE CHANGEMENT : Remplacer le lien a par un formulaire POST #}
+                    <form action="{% url 'logout' %}" method="post" class="inline">
+                        {% csrf_token %} {# Très important pour la sécurité dans Django #}
+                        <button type="submit" class="text-text-light hover:text-accent font-semibold transition-colors duration-300 bg-transparent border-none cursor-pointer p-0">
+                            Déconnexion ({{ user.username }})
+                        </button>
+                    </form>
+                    
+                {% else %}
+                    <a href="{% url 'login' %}" class="text-text-light hover:text-accent font-semibold transition-colors duration-300">Connexion</a>
+                    <a href="{% url 'register' %}" class="btn-gradient-secondary text-white py-2 px-4 rounded-full font-bold shadow-lg transition-transform transform hover:scale-105">Inscription</a>
+                {% endif %}
+                <a href="{% url 'contact' %}" class="text-text-light hover:text-accent font-semibold transition-colors duration-300">Contact</a>
+            </div>
+        </nav>
+    </header>
+
+    <div id="content" class="flex-grow">
+        {% block content %}
+        {% endblock content %}
+    </div>
+
+    <footer class="bg-gray-900 text-text-dark py-8 mt-16">
+        <div class="container mx-auto px-6 text-center">
+            <p>&copy; 2025 TroqueTout. Tous droits réservés.</p>
+            <div class="flex justify-center space-x-6 mt-4">
+                <a href="#" class="text-text-dark hover:text-accent transition-colors"><i class="fab fa-facebook-f"></i></a>
+                <a href="#" class="text-text-dark hover:text-accent transition-colors"><i class="fab fa-twitter"></i></a>
+                <a href="#" class="text-text-dark hover:text-accent transition-colors"><i class="fab fa-instagram"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    {% block extra_js %}{% endblock extra_js %}
+</body>
+</html>

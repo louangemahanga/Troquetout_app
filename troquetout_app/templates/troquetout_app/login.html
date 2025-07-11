@@ -1,0 +1,93 @@
+{# troquetout_app/templates/registration/login.html #}
+{% load static %}
+{% load widget_tweaks %} {# <-- AJOUTEZ CETTE LIGNE #}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connexion - TroqueTout</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'troquetout_app/css/style.css' %}">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary': '#6a0dad',
+                        'secondary': '#8e44ad',
+                        'accent': '#9b59b6',
+                        'background': '#1a1a2e',
+                        'surface': '#2b2b4d',
+                        'text-light': '#e0e0e0',
+                        'text-dark': '#a0a0a0',
+                    },
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-background text-text-light min-h-screen flex flex-col">
+
+    <header class="bg-surface shadow-md py-4 px-6 flex justify-between items-center z-10">
+        <h1 class="text-3xl font-bold gradient-text-primary"><a href="{% url 'home' %}">TroqueTout</a></h1>
+        <nav>
+            <ul class="flex space-x-6">
+                <li><a href="{% url 'creer_annonce' %}" class="text-text-light hover:text-accent transition-colors duration-300">Poster une Annonce</a></li>
+                {% if user.is_authenticated %}
+                    <li><a href="#" class="text-text-light hover:text-accent transition-colors duration-300">Salut, {{ user.username }}!</a></li>
+                    <li><a href="{% url 'logout' %}" class="text-red-400 hover:text-red-500 transition-colors duration-300">Déconnexion</a></li>
+                {% else %}
+                    <li><a href="{% url 'login' %}" class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-secondary transition-colors duration-300">Connexion / Inscription</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+    </header>
+
+    <main class="flex-grow container mx-auto px-4 py-8 flex items-center justify-center">
+        <section class="max-w-md w-full bg-white rounded-lg p-8 shadow-lg">
+            <h2 class="text-3xl font-bold text-gray-800 text-center mb-6">Connexion</h2>
+
+            {% if form.errors %}
+                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+                    <strong class="font-bold">Erreur de connexion !</strong>
+                    <span class="block sm:inline">Votre nom d'utilisateur et/ou mot de passe sont incorrects.</span>
+                </div>
+            {% endif %}
+
+            <form method="post">
+                {% csrf_token %}
+                <div class="mb-4">
+                    <label for="{{ form.username.id_for_label }}" class="block text-gray-700 text-sm font-bold mb-2">Nom d'utilisateur:</label>
+                    {# APPLIQUEZ LES CLASSES TAILWIND ICI #}
+                    {% render_field form.username class="shadow appearance-none border rounded w-3/4 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-indigo-500 mx-auto block" %}
+                </div>
+                <div class="mb-6">
+                    <label for="{{ form.password.id_for_label }}" class="block text-gray-700 text-sm font-bold mb-2">Mot de passe:</label>
+                    {# APPLIQUEZ LES CLASSES TAILWIND ICI #}
+                    {% render_field form.password class="shadow appearance-none border rounded w-3/4 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-indigo-500 mx-auto block" %}
+                </div>
+
+                {# Vous pouvez ajouter un lien "Mot de passe oublié ?" ici #}
+                <div class="text-right mb-4">
+                    <a href="{% url 'password_reset' %}" class="text-sm text-indigo-600 hover:text-indigo-800 font-medium">Mot de passe oublié ?</a>
+                </div>
+
+                {# Pour centrer le bouton aussi, donnez-lui une largeur et mx-auto #}
+                <button type="submit" class="w-3/4 bg-indigo-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-indigo-700 transition-colors duration-300 block mx-auto">
+                    Se connecter
+                </button>
+                <input type="hidden" name="next" value="{{ next }}"> {# Important pour la redirection après connexion #}
+            </form>
+
+            <p class="text-center text-gray-600 text-sm mt-6">Pas encore de compte ? <a href="{% url 'register' %}" class="text-indigo-600 hover:text-indigo-800 font-medium">Créez-en un ici</a>.</p>
+            
+        </section>
+    </main>
+
+    <footer class="bg-surface text-text-dark py-6 text-center text-sm shadow-inner">
+        <p>&copy; 2025 TroqueTout. Tous droits réservés.</p>
+    </footer>
+</body>
+</html>

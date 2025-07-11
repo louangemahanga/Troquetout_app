@@ -1,0 +1,80 @@
+{# troquetout_app/templates/troquetout_app/faq_aide.html #}
+{% extends 'troquetout_app/base.html' %}
+{% block title %}FAQ & Aide - TroqueTout{% endblock title %}
+
+{% block content %}
+<div class="bg-gray-50 py-16 md:py-24">
+    <main class="container mx-auto px-6 flex-grow flex items-center justify-center">
+        <section class="max-w-4xl w-full bg-white rounded-3xl p-8 shadow-xl glass-effect animate-fade-in">
+            <h2 class="text-4xl font-bold gradient-text-primary mb-10 text-center">Questions Fréquentes & Aide</h2>
+
+            <div class="space-y-8">
+                {# Section 1: Questions Générales #}
+                <div class="bg-gray-100 rounded-2xl p-6 shadow-md border border-gray-200">
+                    <h3 class="text-2xl font-bold text-secondary mb-4">Questions Générales</h3>
+                    <div class="space-y-4">
+                        <div class="border-b border-gray-200 pb-4">
+                            <h4 class="text-xl font-semibold text-gray-800 mb-2">Q: Qu'est-ce que TroqueTout ?</h4>
+                            <p class="text-gray-700">R: TroqueTout est une plateforme de troc en ligne où vous pouvez échanger des biens et des services avec d'autres utilisateurs sans transaction monétaire. C'est une excellente façon de donner une seconde vie à vos objets ou d'acquérir de nouvelles choses !</p>
+                        </div>
+                        <div class="border-b border-gray-200 pb-4">
+                            <h4 class="text-xl font-semibold text-gray-800 mb-2">Q: Comment puis-je m'inscrire ?</h4>
+                            <p class="text-gray-700">R: Cliquez sur "Connexion / Inscription" dans le menu de navigation et suivez les étapes simples pour créer votre compte.</p>
+                        </div>
+                         <div>
+                            <h4 class="text-xl font-semibold text-gray-800 mb-2">Q: Le service est-il gratuit ?</h4>
+                            <p class="text-gray-700">R: Oui, l'utilisation de TroqueTout pour poster des annonces, faire des propositions et échanger est entièrement gratuite. Nous ne prenons aucune commission sur les trocs.</p>
+                        </div>
+                    </div>
+                </div>
+
+                {# Section 2: Poster et Gérer les Annonces #}
+                <div class="bg-gray-100 rounded-2xl p-6 shadow-md border border-gray-200">
+                    <h3 class="text-2xl font-bold text-secondary mb-4">Poster et Gérer les Annonces</h3>
+                    <div class="space-y-4">
+                        <div class="border-b border-gray-200 pb-4">
+                            <h4 class="text-xl font-semibold text-gray-800 mb-2">Q: Comment poster une annonce ?</h4>
+                            <p class="text-gray-700">R: Connectez-vous à votre compte, puis cliquez sur "Poster une Annonce" dans la barre de navigation. Remplissez tous les champs requis, ajoutez des photos, et soumettez votre annonce.</p>
+                        </div>
+                        <div class="border-b border-gray-200 pb-4">
+                            <h4 class="text-xl font-semibold text-gray-800 mb-2">Q: Puis-je modifier ou supprimer mon annonce ?</h4>
+                            <p class="text-gray-700">R: Oui. Rendez-vous sur la page de détail de votre annonce. Si vous êtes l'auteur, vous verrez des options pour "Modifier" ou "Supprimer" l'annonce.</p>
+                        </div>
+                        <div>
+                            <h4 class="text-xl font-semibold text-gray-800 mb-2">Q: Combien de temps mon annonce reste-t-elle en ligne ?</h4>
+                            <p class="text-gray-700">R: Les annonces restent généralement actives pendant 30 jours. Vous recevrez une notification avant leur expiration pour les renouveler si vous le souhaitez.</p>
+                        </div>
+                    </div>
+                </div>
+
+                {# Section 3: Interactions et Sécurité #}
+                <div class="bg-gray-100 rounded-2xl p-6 shadow-md border border-gray-200">
+                    <h3 class="text-2xl font-bold text-secondary mb-4">Interactions et Sécurité</h3>
+                    <div class="space-y-4">
+                        <div class="border-b border-gray-200 pb-4">
+                            <h4 class="text-xl font-semibold text-gray-800 mb-2">Q: Comment faire une proposition de troc ?</h4>
+                            <p class="text-gray-700">R: Sur la page de détail de l'annonce qui vous intéresse, cliquez sur le bouton "Faire une Proposition". Vous pourrez ensuite proposer un ou plusieurs de vos objets en échange.</p>
+                        </div>
+                        <div class="border-b border-gray-200 pb-4">
+                            <h4 class="text-xl font-semibold text-gray-800 mb-2">Q: Comment contacter un annonceur ?</h4>
+                            <p class="text-gray-700">R: Une fois que vous avez fait une proposition, un système de messagerie interne vous permettra de discuter directement avec l'annonceur pour finaliser les détails du troc.</p>
+                        </div>
+                        <div>
+                            <h4 class="text-xl font-semibold text-gray-800 mb-2">Q: Comment signaler un contenu inapproprié ou un utilisateur ?</h4>
+                            <p class="text-gray-700">R: Si vous rencontrez un problème, veuillez utiliser le formulaire de contact ou les options de signalement sur la plateforme. Nous prendrons les mesures nécessaires rapidement.</p>
+                        </div>
+                    </div>
+                </div>
+
+                {# Lien vers la page de contact pour plus d'aide #}
+                <div class="text-center mt-10">
+                    <p class="text-lg text-gray-700 mb-4">Vous n'avez pas trouvé votre réponse ?</p>
+                    <a href="{% url 'contact' %}" class="bg-accent text-white px-8 py-4 rounded-full font-bold hover:bg-secondary transition-colors duration-300 text-lg shadow-md">
+                        Contacter le support
+                    </a>
+                </div>
+            </div>
+        </section>
+    </main>
+</div>
+{% endblock content %}

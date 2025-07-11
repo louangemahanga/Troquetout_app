@@ -1,0 +1,200 @@
+{# troquetout_app/templates/troquetout_app/creer_annonce.html #}
+{% load static %}
+{% load widget_tweaks %} {# <-- Chargez cette balise ! #}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Créer une Annonce - TroqueTout</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'troquetout_app/css/style.css' %}">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary': '#6a0dad',
+                        'secondary': '#8e44ad',
+                        'accent': '#9b59b6',
+                        'background': '#1a1a2e',
+                        'surface': '#2b2b4d',
+                        'text-light': '#e0e0e0',
+                        'text-dark': '#a0a0a0',
+                    },
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-background text-text-light min-h-screen flex flex-col">
+
+    <header class="bg-surface shadow-md py-4 px-6 flex justify-between items-center z-10">
+        <h1 class="text-3xl font-bold gradient-text-primary"><a href="{% url 'home' %}">TroqueTout</a></h1>
+        <nav>
+            <ul class="flex space-x-6">
+                <li><a href="{% url 'creer_annonce' %}" class="text-text-light hover:text-accent transition-colors duration-300">Poster une Annonce</a></li>
+                {% if user.is_authenticated %}
+                    <li><a href="#" class="text-text-light hover:text-accent transition-colors duration-300">Salut, {{ user.username }}!</a></li>
+                    <li><a href="{% url 'logout' %}" class="text-red-400 hover:text-red-500 transition-colors duration-300">Déconnexion</a></li>
+                {% else %}
+                    <li><a href="{% url 'login' %}" class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-secondary transition-colors duration-300">Connexion / Inscription</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+    </header>
+
+    <main class="flex-grow container mx-auto px-4 py-8">
+        <section class="max-w-xl mx-auto bg-surface rounded-lg p-8 shadow-lg glass-effect">
+            <h2 class="text-3xl font-bold text-text-light text-center mb-6">Créer une Nouvelle Annonce</h2>
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                {# Champ Titre #}
+                <div class="mb-4">
+                    <label for="{{ form.titre.id_for_label }}" class="block text-text-light text-sm font-bold mb-2">{{ form.titre.label }}:</label>
+                    {% render_field form.titre class="w-full p-3 border border-gray-600 rounded-lg bg-surface text-text-light focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent transition-all duration-300" placeholder='Titre de l&#39;annonce' %}
+                    {% if form.titre.help_text %}
+                        <p class="text-text-dark text-xs italic">{{ form.titre.help_text }}</p>
+                    {% endif %}
+                    {% for error in form.titre.errors %}
+                        <p class="text-red-500 text-xs italic">{{ error }}</p>
+                    {% endfor %}
+                </div>
+
+                {# Champ Description #}
+                <div class="mb-4">
+                    <label for="{{ form.description.id_for_label }}" class="block text-text-light text-sm font-bold mb-2">{{ form.description.label }}:</label>
+                    {% render_field form.description class="w-full p-3 border border-gray-600 rounded-lg bg-surface text-text-light focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent transition-all duration-300" placeholder="Description de votre article" %}
+                    {% if form.description.help_text %}
+                        <p class="text-text-dark text-xs italic">{{ form.description.help_text }}</p>
+                    {% endif %}
+                    {% for error in form.description.errors %}
+                        <p class="text-red-500 text-xs italic">{{ error }}</p>
+                    {% endfor %}
+                </div>
+
+                {# Champ Catégorie #}
+                <div class="mb-4">
+                    <label for="{{ form.categorie.id_for_label }}" class="block text-text-light text-sm font-bold mb-2">{{ form.categorie.label }}:</label>
+                    {% render_field form.categorie class="w-full p-3 border border-gray-600 rounded-lg bg-surface text-text-light focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent transition-all duration-300" %}
+                    {% if form.categorie.help_text %}
+                        <p class="text-text-dark text-xs italic">{{ form.categorie.help_text }}</p>
+                    {% endif %}
+                    {% for error in form.categorie.errors %}
+                        <p class="text-red-500 text-xs italic">{{ error }}</p>
+                    {% endfor %}
+                </div>
+
+                {# Champ Image #}
+                <div class="mb-4">
+                    <label for="{{ form.image.id_for_label }}" class="block text-text-light text-sm font-bold mb-2">{{ form.image.label }}:</label>
+                    {% render_field form.image class="block w-full text-sm text-text-light file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-white hover:file:bg-secondary cursor-pointer" %}
+                    {% if form.image.help_text %}
+                        <p class="text-text-dark text-xs italic">{{ form.image.help_text }}</p>
+                    {% endif %}
+                    {% for error in form.image.errors %}
+                        <p class="text-red-500 text-xs italic">{{ error }}</p>
+                    {% endfor %}
+                </div>
+
+                {# Champ Valeur Estimée #}
+                <div class="mb-4">
+                    <label for="{{ form.valeur_estimee.id_for_label }}" class="block text-text-light text-sm font-bold mb-2">{{ form.valeur_estimee.label }}:</label>
+                    {% render_field form.valeur_estimee class="w-full p-3 border border-gray-600 rounded-lg bg-surface text-text-light focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent transition-all duration-300" placeholder='Ex: 50€ ou &#39;Négociable&#39;' %}
+                    {% if form.valeur_estimee.help_text %}
+                        <p class="text-text-dark text-xs italic">{{ form.valeur_estimee.help_text }}</p>
+                    {% endif %}
+                    {% for error in form.valeur_estimee.errors %}
+                        <p class="text-red-500 text-xs italic">{{ error }}</p>
+                    {% endfor %}
+                </div>
+
+                {# NOUVEAUX CHAMPS AJOUTÉS CI-DESSOUS #}
+
+                {# Champ Type d'Annonce #}
+                <div class="mb-4">
+                    <label for="{{ form.type_annonce.id_for_label }}" class="block text-text-light text-sm font-bold mb-2">{{ form.type_annonce.label }}:</label>
+                    {% render_field form.type_annonce class="w-full p-3 border border-gray-600 rounded-lg bg-surface text-text-light focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent transition-all duration-300" %}
+                    {% if form.type_annonce.help_text %}
+                        <p class="text-text-dark text-xs italic">{{ form.type_annonce.help_text }}</p>
+                    {% endif %}
+                    {% for error in form.type_annonce.errors %}
+                        <p class="text-red-500 text-xs italic">{{ error }}</p>
+                    {% endfor %}
+                </div>
+
+                {# Champ Localisation #}
+                <div class="mb-4">
+                    <label for="{{ form.localisation.id_for_label }}" class="block text-text-light text-sm font-bold mb-2">{{ form.localisation.label }}:</label>
+                    {% render_field form.localisation class="w-full p-3 border border-gray-600 rounded-lg bg-surface text-text-light focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent transition-all duration-300" placeholder="Ex: Paris, Brazzaville, etc." %}
+                    {% if form.localisation.help_text %}
+                        <p class="text-text-dark text-xs italic">{{ form.localisation.help_text }}</p>
+                    {% endif %}
+                    {% for error in form.localisation.errors %}
+                        <p class="text-red-500 text-xs italic">{{ error }}</p>
+                    {% endfor %}
+                </div>
+{# Champ Téléphone de Contact #}
+<div class="mb-4">
+    <label for="{{ form.contact_telephone.id_for_label }}" class="block text-text-light text-sm font-bold mb-2">{{ form.contact_telephone.label }}:</label>
+    {% render_field form.contact_telephone class="w-full p-3 border border-gray-600 rounded-lg bg-surface text-text-light focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent transition-all duration-300" placeholder="Votre numéro de téléphone (optionnel)" %}
+    {% if form.contact_telephone.help_text %}
+        <p class="text-text-dark text-xs italic">{{ form.contact_telephone.help_text }}</p>
+    {% endif %}
+    {% for error in form.contact_telephone.errors %}
+        <p class="text-red-500 text-xs italic">{{ error }}</p>
+    {% endfor %}
+</div>
+
+                {# Champ Email de Contact #}
+<div class="mb-4">
+    <label for="{{ form.contact_email.id_for_label }}" class="block text-text-light text-sm font-bold mb-2">{{ form.contact_email.label }}:</label>
+    {% render_field form.contact_email class="w-full p-3 border border-gray-600 rounded-lg bg-surface text-text-light focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent transition-all duration-300" placeholder="Une adresse email de contact (optionnel)" %}
+    {% if form.contact_email.help_text %}
+        <p class="text-text-dark text-xs italic">{{ form.contact_email.help_text }}</p>
+    {% endif %}
+    {% for error in form.contact_email.errors %}
+        <p class="text-red-500 text-xs italic">{{ error }}</p>
+    {% endfor %}
+</div>
+
+                {# Champ Adresse pour l'Échange - C'est ici que la correction a été appliquée ! #}
+                <div class="mb-4">
+                    <label for="{{ form.adresse.id_for_label }}" class="block text-text-light text-sm font-bold mb-2">{{ form.adresse.label }}:</label>
+                    {% render_field form.adresse class="w-full p-3 border border-gray-600 rounded-lg bg-surface text-text-light focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent transition-all duration-300" placeholder="Adresse précise pour l&#39;échange (optionnel)" %}
+                    {% if form.adresse.help_text %}
+                        <p class="text-text-dark text-xs italic">{{ form.adresse.help_text }}</p>
+                    {% endif %}
+                    {% for error in form.adresse.errors %}
+                        <p class="text-red-500 text-xs italic">{{ error }}</p>
+                    {% endfor %}
+                </div>
+
+                {# Champ Statut de l'Annonce #}
+                <div class="mb-6">
+                    <label for="{{ form.statut.id_for_label }}" class="block text-text-light text-sm font-bold mb-2">{{ form.statut.label }}:</label>
+                    {% render_field form.statut class="w-full p-3 border border-gray-600 rounded-lg bg-surface text-text-light focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent transition-all duration-300" %}
+                    {% if form.statut.help_text %}
+                        <p class="text-text-dark text-xs italic">{{ form.statut.help_text }}</p>
+                    {% endif %}
+                    {% for error in form.statut.errors %}
+                        <p class="text-red-500 text-xs italic">{{ error }}</p>
+                    {% endfor %}
+                </div>
+
+                {# Bouton de soumission #}
+                <button type="submit" class="w-full bg-primary text-white font-bold py-3 px-4 rounded-lg hover:bg-secondary transition-colors duration-300">
+                    Poster l'Annonce
+                </button>
+            </form>
+        </section>
+    </main>
+
+    <footer class="bg-surface text-text-dark py-6 text-center text-sm shadow-inner">
+        <p>&copy; 2023 TroqueTout. Tous droits réservés.</p>
+    </footer>
+
+</body>
+</html>

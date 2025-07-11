@@ -1,0 +1,31 @@
+{% extends 'base.html' %} {# Assurez-vous d'étendre votre template de base #}
+
+{% block title %}Mon Profil{% endblock %}
+
+{% block content %}
+<div class="container mx-auto p-8">
+    <h1 class="text-3xl font-bold mb-6">Profil de {{ profile.user.username }}</h1>
+
+    <div class="bg-white shadow-md rounded-lg p-6">
+        {% if profile.profile_image %}
+            <img src="{{ profile.profile_image.url }}" alt="Image de profil" class="w-32 h-32 rounded-full mx-auto mb-4 object-cover">
+        {% else %}
+            <img src="/static/images/default_profile.png" alt="Image de profil par défaut" class="w-32 h-32 rounded-full mx-auto mb-4 object-cover">
+        {% endif %}
+
+        <p class="text-center text-lg mb-2"><strong>Nom d'utilisateur:</strong> {{ profile.user.username }}</p>
+        <p class="text-center text-lg mb-2"><strong>Email:</strong> {{ profile.user.email }}</p>
+        {% if profile.bio %}
+            <p class="text-center text-lg mb-2"><strong>Bio:</strong> {{ profile.bio }}</p>
+        {% endif %}
+        {% if profile.location %}
+            <p class="text-center text-lg mb-2"><strong>Lieu:</strong> {{ profile.location }}</p>
+        {% endif %}
+
+        <div class="text-center mt-6">
+            <a href="{% url 'profile_modifier' %}" class="inline-block bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-600 transition-colors">Modifier le profil</a>
+            {# Ajoutez d'autres liens si nécessaire, par exemple vers les annonces de l'utilisateur #}
+        </div>
+    </div>
+</div>
+{% endblock %}

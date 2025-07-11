@@ -1,0 +1,67 @@
+{# troquetout_app/templates/troquetout_app/search_results.html #}
+{% extends 'troquetout_app/base.html' %}
+{% load static %}
+
+{% block title %}Résultats de Recherche - TroqueTout{% endblock %}
+
+{% block content %}
+<main class="flex-grow container mx-auto px-4 py-8">
+    <section class="mb-8">
+        <h2 class="text-4xl font-bold text-accent text-center mb-6">Résultats de votre recherche</h2>
+        
+        {# Formulaire de recherche pour affiner ou relancer une recherche #}
+        <form method="get" action="{% url 'search_annonces' %}" class="flex flex-col md:flex-row gap-4 bg-surface p-6 rounded-lg shadow-lg glass-effect">
+            <div class="flex-grow">
+                <label for="{{ form.query.id_for_label }}" class="sr-only">{{ form.query.label }}</label>
+                {{ form.query }} {# Rend le champ query du formulaire #}
+            </div>
+            
+            <div>
+                <label for="{{ form.category.id_for_label }}" class="sr-only">{{ form.category.label }}</label>
+                {{ form.category }} {# Rend le champ category du formulaire #}
+            </div>
+            
+            <button type="submit" class="bg-primary text-white py-3 px-6 rounded-lg font-bold hover:bg-secondary transition-colors duration-300 flex items-center justify-center">
+                <i class="fas fa-search mr-2"></i> Rechercher
+            </button>
+        </form>
+    </section>
+
+    <section>
+        <h3 class="text-3xl font-bold text-text-light mb-6">Annonces Trouvées</h3>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {% if annonces %}
+                {% for annonce in annonces %}
+                    <div class="bg-surface rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300 ease-in-out glass-effect">
+                        <a href="{% url 'detail_annonce' pk=annonce.pk %}" class="block">
+                            {% if annonce.image %}
+                                <img src="{{ annonce.image.url }}" alt="{{ annonce.titre }}" class="w-full h-48 object-cover">
+                            {% else %}
+                                <div class="w-full h-48 bg-gray-700 flex items-center justify-center text-text-dark">
+                                    <span>Pas d'image</span>
+                                </div>
+                            {% endif %}
+                            <div class="p-4">
+                                <h4 class="text-xl font-semibold text-accent mb-2">{{ annonce.titre }}</h4>
+                                <p class="text-text-dark text-sm mb-2">
+                                    <i class="fas fa-tag mr-1"></i> {{ annonce.categorie.nom|default:"Non spécifiée" }}
+                                </p>
+                                <p class="text-text-dark text-sm mb-4">
+                                    <i class="fas fa-map-marker-alt mr-1"></i> {{ annonce.localisation|default:"Non spécifiée" }}
+                                </p>
+                                <p class="text-text-light text-sm line-clamp-3 mb-4">{{ annonce.description }}</p>
+                                <span class="inline-block px-3 py-1 text-xs font-semibold rounded-full 
+                                    {% if annonce.statut == 'OUVERT' %}bg-green-600 text-white{% elif annonce.statut == 'ECHANGE' %}bg-yellow-600 text-white{% else %}bg-red-600 text-white{% endif %}">
+                                    {{ annonce.get_statut_display }}
+                                </span>
+                            </div>
+                        </a>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p class="text-text-light col-span-full text-center py-10">Aucune annonce trouvée pour votre recherche.</p>
+            {% endif %}
+        </div>
+    </section>
+</main>
+{% endblock content %}

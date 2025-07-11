@@ -1,0 +1,73 @@
+{# troquetout_app/templates/troquetout_app/subscription_success.html #}
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Abonnement Réussi !</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'troquetout_app/css/style.css' %}">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary': '#6a0dad',
+                        'secondary': '#8e44ad',
+                        'accent': '#9b59b6',
+                        'background': '#1a1a2e',
+                        'surface': '#2b2b4d',
+                        'text-light': '#e0e0e0',
+                        'text-dark': '#a0a0a0',
+                    },
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-background text-text-light min-h-screen flex flex-col justify-between">
+
+    <header class="bg-surface shadow-md py-4 px-6 flex justify-between items-center z-10">
+        <h1 class="text-3xl font-bold gradient-text-primary"><a href="{% url 'home' %}">TroqueTout</a></h1>
+        <nav>
+            <ul class="flex space-x-6">
+                <li><a href="{% url 'creer_annonce' %}" class="text-text-light hover:text-accent transition-colors duration-300">Poster une Annonce</a></li>
+                {% if user.is_authenticated %}
+                    <li><a href="#" class="text-text-light hover:text-accent transition-colors duration-300">Salut, {{ user.username }}!</a></li>
+                    <li>
+                        <form action="{% url 'logout' %}" method="post" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="text-red-400 hover:text-red-500 transition-colors duration-300 bg-transparent border-none cursor-pointer p-0 m-0">
+                                Déconnexion
+                            </button>
+                        </form>
+                    </li>
+                {% else %}
+                    <li><a href="{% url 'login' %}" class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-secondary transition-colors duration-300">Connexion / Inscription</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+    </header>
+
+    <main class="flex-grow container mx-auto px-4 py-16 flex flex-col items-center justify-center text-center">
+        <div class="bg-surface rounded-lg p-10 md:p-16 shadow-lg glass-effect max-w-2xl w-full">
+            <i class="fas fa-check-circle text-green-500 text-6xl mb-6"></i>
+            <h2 class="text-4xl font-bold text-accent mb-4">Abonnement Réussi !</h2>
+            <p class="text-text-light text-xl mb-8">
+                Merci de vous être abonné à la newsletter de TroqueTout.
+                Vous recevrez bientôt les dernières annonces et opportunités directement dans votre boîte mail !
+            </p>
+            <a href="{% url 'home' %}" class="bg-primary text-white px-8 py-4 rounded-full font-bold hover:bg-secondary transition-colors duration-300 text-lg shadow-md">
+                Retour à la page d'accueil
+            </a>
+        </div>
+    </main>
+
+    <footer class="bg-surface text-text-dark py-6 text-center text-sm shadow-inner">
+        <p>&copy; 2025 TroqueTout. Tous droits réservés.</p>
+    </footer>
+
+</body>
+</html>
