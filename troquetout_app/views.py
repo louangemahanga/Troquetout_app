@@ -16,7 +16,7 @@ from django.db import transaction
 
 # Importez tous vos modèles en une seule ligne propre
 from .models import Annonce, Categorie, ContactMessage, NewsletterSubscriber, AnnonceLikeDislike, Commentaire, Proposition, Profile
-from django.views.decorators.http import require_http_methods #
+from django.views.decorators.http import require_http_methods # <-- Assurez-vous que cette ligne est bien présente !
 
 # Importez tous vos formulaires. Assurez-vous que tous ces formulaires sont définis dans forms.py
 from .forms import (
@@ -109,10 +109,11 @@ def login_view(request):
 
 
 @login_required
+@require_http_methods(["GET"]) # <-- Ajouté ou confirmé ce décorateur
 def logout_view(request):
     logout(request)
-    messages.info(request, "Vous avez été déconnecté avec succès.")
-    return redirect('logout_success')
+    messages.success(request, "Vous avez été déconnecté avec succès.") # <-- Ajouté ou confirmé ce message
+    return redirect('home') # <-- Confirmer que la redirection est bien vers 'home'
 
 
 @login_required
@@ -520,4 +521,4 @@ def modifier_proposition(request, pk):
         'proposition': proposition,
         'annonce_cible': proposition.annonce_cible, # Utile pour afficher le titre de l'annonce ciblée
     }
-    return render(request, 'troquetout_app/modifier_proposition.html', context) # Nous créerons ce template à l'étape 3
+    return render(request, 'troquetout_app/modifier_proposition.html', context) # Nous créerons ce template à l'étape 3d

@@ -15,6 +15,7 @@ SECRET_KEY = 'django-insecure-mb=jgsg*6)-8#)d#n%r%b!zs%+lpcabjpv!v=so!hhg$!1pw7!
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
+APPEND_SLASH = True # Assurez-vous que cette ligne est présente et True
 
 ALLOWED_HOSTS = []
 
@@ -129,17 +130,11 @@ MEDIA_ROOT = BASE_DIR / 'media'
 # ... (le reste de vos settings) ...
 
 # Configuration des redirections d'authentification
-LOGIN_REDIRECT_URL = '/' # Redirige vers la page d'accueil après la connexion
-LOGOUT_REDIRECT_URL = '/' # Redirige vers la page d'accueil après la déconnexion
-LOGIN_URL = 'login' # Nom de l'URL pour la page de connexion (utilisé par @login_required)
+LOGIN_REDIRECT_URL = 'home' # Redirige vers la page d'accueil après la connexion
 
-# troquetout_project/settings.py
+LOGOUT_REDIRECT_URL = 'home' # Redirige vers la page d'accueil après la déconnexion
 
-# ... (le reste de vos settings) ...
-
-# Configuration des redirections d'authentification
-LOGIN_REDIRECT_URL = '/' # Redirige vers la page d'accueil après la connexion
-LOGOUT_REDIRECT_URL = '/' # Redirige vers la page d'accueil après la déconnexion
+# LOGOUT_URL= 'logout'
 LOGIN_URL = 'login' # Nom de l'URL pour la page de connexion (utilisé par @login_required)
 
 # troquetout_project/settings.py
